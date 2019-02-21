@@ -3,19 +3,11 @@
 (function () {
   const FILTERS_NAMES = [`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`];
   const CARDS_CLASSES = [`card--black`, `card--pink`, `card--yellow`, `card--blue`, `card--red`];
-  const TASKS_AMOUNT = 100;
+  const TASKS_AMOUNT = 20;
 
   const main = document.querySelector(`.main`);
   const mainFilter = main.querySelector(`.main__filter`);
-  const currentFiltersInputs = mainFilter.querySelectorAll(`.filter__input`);
-  const currentFiltersLabels = mainFilter.querySelectorAll(`.filter__label`);
   const tasksContainer = main.querySelector(`.board__tasks`);
-
-  const clearMainFilter = (array) => {
-    array.forEach((element) => {
-      element.remove();
-    });
-  };
 
   const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
@@ -328,30 +320,32 @@
     </article>`;
   };
 
+  const clearElementHtml = (element) => {
+    element.innerHTML = ``;
+  };
+
+  const renderTasks = (amount) => {
+    for (let i = 0; i < amount; i++) {
+      tasksContainer.innerHTML += createTask(`text`, CARDS_CLASSES[getRandomInt(0, CARDS_CLASSES.length)], Math.round(Math.random()));
+    }
+  };
+
   const renderFilters = () => {
+    clearElementHtml(mainFilter);
     FILTERS_NAMES.forEach((name) => {
-      mainFilter.insertAdjacentHTML(`beforeend`, createFilter(name, getRandomInt(0, TASKS_AMOUNT)));
+      mainFilter.innerHTML += createFilter(name, getRandomInt(0, TASKS_AMOUNT));
     });
 
     const filters = mainFilter.querySelectorAll(`.filter__label`);
     filters.forEach((filter) => {
       filter.addEventListener(`click`, () => {
-        const tasks = tasksContainer.querySelectorAll(`.card`);
-        tasks.forEach((task) => {
-          task.remove();
-        });
-        createTask(getRandomInt(0, TASKS_AMOUNT));
+        clearElementHtml(tasksContainer);
+        renderTasks(getRandomInt(0, TASKS_AMOUNT));
       });
     });
   };
 
-  const renderTasks = (amount) => {
-    for (let i = 0; i < amount; i++) {
-      tasksContainer.insertAdjacentHTML(`beforeend`, createTask(`text`, CARDS_CLASSES[getRandomInt(0, CARDS_CLASSES.length)], Math.round(Math.random())));
-    }
-  };
-  clearMainFilter(currentFiltersInputs);
-  clearMainFilter(currentFiltersLabels);
+
   renderFilters();
-  renderTasks(10);
+  renderTasks(7);
 })();
