@@ -320,29 +320,31 @@
     </article>`;
   };
 
-  const clearElementHtml = (element) => {
-    element.innerHTML = ``;
+  const render = (root, content) => {
+    root.innerHTML = content;
   };
 
   const renderTasks = (amount) => {
+    let content = ``;
+
     for (let i = 0; i < amount; i++) {
-      tasksContainer.innerHTML += createTask(`text`, CARDS_CLASSES[getRandomInt(0, CARDS_CLASSES.length)], Math.round(Math.random()));
+      content += createTask(`text`, CARDS_CLASSES[getRandomInt(0, CARDS_CLASSES.length)], Math.round(Math.random()));
     }
+
+    render(tasksContainer, content);
   };
 
   const renderFilters = () => {
-    clearElementHtml(mainFilter);
+    let content = ``;
     FILTERS_NAMES.forEach((name) => {
-      mainFilter.innerHTML += createFilter(name, getRandomInt(0, TASKS_AMOUNT));
+      content += createFilter(name, getRandomInt(0, TASKS_AMOUNT));
     });
 
-    const filters = mainFilter.querySelectorAll(`.filter__label`);
-    filters.forEach((filter) => {
-      filter.addEventListener(`click`, () => {
-        clearElementHtml(tasksContainer);
-        renderTasks(getRandomInt(0, TASKS_AMOUNT));
-      });
-    });
+    mainFilter.addEventListener(`click`, () => {
+      renderTasks(getRandomInt(0, TASKS_AMOUNT));
+    }, true);
+
+    render(mainFilter, content);
   };
 
 
