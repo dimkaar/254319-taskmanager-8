@@ -7,8 +7,8 @@ const createFilter = (name, amount, checked = false, disabled = false) => {
     id="filter__${name}"
     class="filter__input visually-hidden"
     name="filter"
-    ${checked === true ? checked : ``}
-    ${disabled === true ? disabled : ``}
+    ${checked ? checked : ``}
+    ${disabled ? disabled : ``}
     />
     <label for="filter__${name}" class="filter__label">
       ${name} <span class="filter__all-count">${amount}</span>

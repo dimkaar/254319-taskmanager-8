@@ -1,5 +1,5 @@
-import * as constants from './constants';
+import {tasksNumber} from './constants';
 import {renderFilters, renderTasks} from './filter';
 
 renderFilters();
-renderTasks(constants.tasksNumber);
+renderTasks(tasksNumber);
