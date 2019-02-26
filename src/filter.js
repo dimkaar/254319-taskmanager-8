@@ -1,10 +1,10 @@
-import * as constants from './constants';
+import {mainElement, getRandomInt, render} from "./constants";
 import renderTasks from './tasks';
 
 export const FILTERS_NAMES = [`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`];
 export const TASKS_AMOUNT = 20;
 
-const mainFilter = constants.mainElement.querySelector(`.main__filter`);
+const mainFilter = mainElement.querySelector(`.main__filter`);
 
 const createFilter = (name, amount, checked = false, disabled = false) => {
   return `<input
@@ -23,14 +23,14 @@ const createFilter = (name, amount, checked = false, disabled = false) => {
 export const renderFilters = () => {
   let content = ``;
   FILTERS_NAMES.forEach((name) => {
-    content += createFilter(name, constants.getRandomInt(0, TASKS_AMOUNT));
+    content += createFilter(name, getRandomInt(0, TASKS_AMOUNT));
   });
 
   mainFilter.addEventListener(`click`, () => {
-    renderTasks(constants.getRandomInt(0, TASKS_AMOUNT));
+    renderTasks(getRandomInt(0, TASKS_AMOUNT));
   }, true);
 
-  constants.render(mainFilter, content);
+  render(mainFilter, content);
 };
 
 export {default as renderTasks} from './tasks';

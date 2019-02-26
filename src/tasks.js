@@ -1,5 +1,4 @@
-import * as constants from './constants';
-import {mainElement} from "./constants";
+import {mainElement, getRandomInt, render} from "./constants";
 
 const CARDS_CLASSES = [`card--black`, `card--pink`, `card--yellow`, `card--blue`, `card--red`];
 
@@ -304,10 +303,10 @@ const renderTasks = (amount) => {
   let content = ``;
 
   for (let i = 0; i < amount; i++) {
-    content += createTask(`text`, CARDS_CLASSES[constants.getRandomInt(0, CARDS_CLASSES.length)], Math.round(Math.random()));
+    content += createTask(`text`, CARDS_CLASSES[getRandomInt(0, CARDS_CLASSES.length)], Math.round(Math.random()));
   }
 
-  constants.render(tasksContainer, content);
+  render(tasksContainer, content);
 };
 
 export default renderTasks;
