@@ -1,5 +1,4 @@
 const path = require(`path`);
-const HtmlWebpackPlugin = require(`html-webpack-plugin`);
 
 module.exports = {
   mode: `development`,
@@ -8,11 +7,6 @@ module.exports = {
     filename: `bundle.js`,
     path: path.join(__dirname, `public`)
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: `./public/index.html`
-    })
-  ],
   devtool: `source-map`,
   module: {
     rules: [{
