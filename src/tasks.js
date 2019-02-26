@@ -1,8 +1,8 @@
-import {mainElement, getRandomInt, render} from "./constants";
+import {getRandomInt, render} from "./constants";
 
 const CARDS_CLASSES = [`card--black`, `card--pink`, `card--yellow`, `card--blue`, `card--red`];
 
-const tasksContainer = mainElement.querySelector(`.board__tasks`);
+const tasksContainer = document.querySelector(`.board__tasks`);
 
 const createTask = (taskText, className, repeating = false) => {
   return `<article class="card ${className} ${ repeating ? `card--repeat` : ``}">

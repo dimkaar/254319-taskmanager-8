@@ -1,10 +1,10 @@
-import {mainElement, getRandomInt, render} from "./constants";
+import {getRandomInt, render} from "./constants";
 import renderTasks from './tasks';
 
 export const FILTERS_NAMES = [`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`];
 export const TASKS_AMOUNT = 20;
 
-const mainFilter = mainElement.querySelector(`.main__filter`);
+const mainFilter = document.querySelector(`.main__filter`);
 
 const createFilter = (name, amount, checked = false, disabled = false) => {
   return `<input
