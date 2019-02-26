@@ -1,4 +1,9 @@
 import * as constants from './constants';
+import {mainElement} from "./constants";
+
+const CARDS_CLASSES = [`card--black`, `card--pink`, `card--yellow`, `card--blue`, `card--red`];
+
+const tasksContainer = mainElement.querySelector(`.board__tasks`);
 
 const createTask = (taskText, className, repeating = false) => {
   return `<article class="card ${className} ${ repeating ? `card--repeat` : ``}">
@@ -299,10 +304,10 @@ const renderTasks = (amount) => {
   let content = ``;
 
   for (let i = 0; i < amount; i++) {
-    content += createTask(`text`, constants.CARDS_CLASSES[constants.getRandomInt(0, constants.CARDS_CLASSES.length)], Math.round(Math.random()));
+    content += createTask(`text`, CARDS_CLASSES[constants.getRandomInt(0, CARDS_CLASSES.length)], Math.round(Math.random()));
   }
 
-  constants.render(constants.tasksContainer, content);
+  constants.render(tasksContainer, content);
 };
 
 export default renderTasks;

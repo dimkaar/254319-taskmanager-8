@@ -1,6 +1,11 @@
 import * as constants from './constants';
 import renderTasks from './tasks';
 
+export const FILTERS_NAMES = [`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`];
+export const TASKS_AMOUNT = 20;
+
+const mainFilter = constants.mainElement.querySelector(`.main__filter`);
+
 const createFilter = (name, amount, checked = false, disabled = false) => {
   return `<input
     type="radio"
@@ -17,15 +22,15 @@ const createFilter = (name, amount, checked = false, disabled = false) => {
 
 export const renderFilters = () => {
   let content = ``;
-  constants.FILTERS_NAMES.forEach((name) => {
-    content += createFilter(name, constants.getRandomInt(0, constants.TASKS_AMOUNT));
+  FILTERS_NAMES.forEach((name) => {
+    content += createFilter(name, constants.getRandomInt(0, TASKS_AMOUNT));
   });
 
-  constants.mainFilter.addEventListener(`click`, () => {
-    renderTasks(constants.getRandomInt(0, constants.TASKS_AMOUNT));
+  mainFilter.addEventListener(`click`, () => {
+    renderTasks(constants.getRandomInt(0, TASKS_AMOUNT));
   }, true);
 
-  constants.render(constants.mainFilter, content);
+  constants.render(mainFilter, content);
 };
 
 export {default as renderTasks} from './tasks';
