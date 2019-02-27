@@ -299,7 +299,7 @@ const createTask = (taskText, className, repeating = false) => {
   </article>`;
 };
 
-const renderTasks = (amount) => {
+export const renderTasks = (amount) => {
   let content = ``;
 
   for (let i = 0; i < amount; i++) {
@@ -308,5 +308,3 @@ const renderTasks = (amount) => {
 
   render(tasksContainer, content);
 };
-
-export default renderTasks;
