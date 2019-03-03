@@ -44,4 +44,5 @@ export const getTaskData = () => ({
   },
   isFavorite: getRandomBoolean(),
   isDone: getRandomBoolean(),
+  isRepeat: getRandomBoolean(),
 });

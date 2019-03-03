@@ -7,6 +7,8 @@ export const Units = {
   minutesInHour: 60,
   hoursInDay: 24,
   daysInWeek: 7,
+  months: [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`],
+  startUnit: 1,
 };
 
 export const getRandomIntegerFromInterval = (min, max) => Math.floor(Math.random() * (max - min)) + min;

@@ -1,10 +1,10 @@
-import {render} from "./constants";
+import {render, Units} from "./constants";
 import {getTaskData} from "./data";
 
 const tasksContainer = document.querySelector(`.board__tasks`);
 
 const createTask = (data) => {
-  return `<article class="card card--${data.color} ${data.isRepeat}">
+  return `<article class="card card--${data.color} ${data.isRepeat ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
@@ -47,12 +47,12 @@ const createTask = (data) => {
                 date: <span class="card__date-status">no</span>
               </button>
   
-              <fieldset class="card__date-deadline" disabled>
+              <fieldset class="card__date-deadline" ${ data.deadlineDate ? `` : `disabled`} >
                 <label class="card__input-deadline-wrap">
                   <input
                     class="card__date"
                     type="text"
-                    placeholder="23 September"
+                    placeholder="${data.deadlineDate}"
                     name="date"
                   />
                 </label>
@@ -60,7 +60,7 @@ const createTask = (data) => {
                   <input
                     class="card__time"
                     type="text"
-                    placeholder="11:15 PM"
+                    placeholder="${ data.deadlineTime ? data.deadlineTime : ``}"
                     name="time"
                   />
                 </label>
@@ -179,14 +179,14 @@ const createTask = (data) => {
             </div>
           </div>
   
-          <label class="card__img-wrap card__img-wrap--empty">
+          <label class="card__img-wrap ${ data.picture ? `` : `card__img-wrap--empty`}">
             <input
               type="file"
               class="card__img-input visually-hidden"
               name="img"
             />
             <img
-              src="img/add-photo.svg"
+              src="${data.picture}"
               alt="task picture"
               class="card__img"
             />
@@ -280,16 +280,6 @@ export const renderTasks = (amount) => {
       return currentTime > dateInMilliseconds ? `` : `card--deadline`;
     };
 
-    const checkTasksRepeat = (tasksRepeatsDays) => {
-      let isRepeat = ``;
-      for (const day in tasksRepeatsDays) {
-        if (tasksRepeatsDays[day]) {
-          isRepeat = `card--repeat`;
-        }
-      }
-      return isRepeat;
-    };
-
     const getRepeatingDays = (tasksRepeatsDays) => {
       let daysWithRepeats = [];
       for (let day in tasksRepeatsDays) {
@@ -300,6 +290,16 @@ export const renderTasks = (amount) => {
       return daysWithRepeats;
     };
 
+    const getDeadlineDate = (taskDueDate) => {
+      const dueDate = new Date(taskDueDate);
+      return (dueDate.getDate() + Units.startUnit) + ` ` + Units.months[dueDate.getMonth()];
+    };
+
+    const getDeadlineTime = (taskDueDate) => {
+      const dueDate = new Date(taskDueDate);
+      return (dueDate.getHours() + Units.startUnit) + `:` + dueDate.getMinutes();
+    };
+
     return {
       title: data.title,
       tags: data.tags,
@@ -307,8 +307,10 @@ export const renderTasks = (amount) => {
       color: data.color,
       isFavorite: Boolean(data.isFavorite),
       isDone: Boolean(data.isDone),
+      isRepeat: Boolean(data.isRepeat),
       isExpired: checkTaskExpiration(data.dueDate),
-      isRepeat: checkTasksRepeat(data.repeatingDays),
+      deadlineDate: getDeadlineDate(data.dueDate),
+      deadlineTime: getDeadlineTime(data.dueDate),
       repeatingDays: getRepeatingDays(data.repeatingDays),
     };
   };
