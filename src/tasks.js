@@ -281,13 +281,7 @@ export const renderTasks = (amount) => {
     };
 
     const getRepeatingDays = (tasksRepeatsDays) => {
-      let daysWithRepeats = [];
-      for (let day in tasksRepeatsDays) {
-        if (tasksRepeatsDays[day]) {
-          daysWithRepeats.push(day);
-        }
-      }
-      return daysWithRepeats;
+      return Object.keys(tasksRepeatsDays).filter((day) => tasksRepeatsDays[day]);
     };
 
     const getDeadlineDate = (taskDueDate) => {
