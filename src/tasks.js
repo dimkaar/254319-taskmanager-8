@@ -1,11 +1,10 @@
-import {getRandomInt, render} from "./constants";
-
-const CARDS_CLASSES = [`card--black`, `card--pink`, `card--yellow`, `card--blue`, `card--red`];
+import {render, Units} from "./constants";
+import {getTaskData} from "./data";
 
 const tasksContainer = document.querySelector(`.board__tasks`);
 
-const createTask = (taskText, className, repeating = false) => {
-  return `<article class="card ${className} ${ repeating ? `card--repeat` : ``}">
+const createTask = (data) => {
+  return `<article class="card card--${data.color} ${data.isRepeat ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
@@ -36,7 +35,7 @@ const createTask = (taskText, className, repeating = false) => {
               placeholder="Start typing your text here..."
               name="text"
             >
-              ${taskText}
+              ${data.title}
             </textarea>
           </label>
         </div>
@@ -48,12 +47,12 @@ const createTask = (taskText, className, repeating = false) => {
                 date: <span class="card__date-status">no</span>
               </button>
   
-              <fieldset class="card__date-deadline" disabled>
+              <fieldset class="card__date-deadline" ${ data.deadlineDate ? `` : `disabled`} >
                 <label class="card__input-deadline-wrap">
                   <input
                     class="card__date"
                     type="text"
-                    placeholder="23 September"
+                    placeholder="${data.deadlineDate}"
                     name="date"
                   />
                 </label>
@@ -61,7 +60,7 @@ const createTask = (taskText, className, repeating = false) => {
                   <input
                     class="card__time"
                     type="text"
-                    placeholder="11:15 PM"
+                    placeholder="${ data.deadlineTime ? data.deadlineTime : ``}"
                     name="time"
                   />
                 </label>
@@ -152,6 +151,7 @@ const createTask = (taskText, className, repeating = false) => {
   
             <div class="card__hashtag">
               <div class="card__hashtag-list">
+              ${[...data.tags].map((tag) => `
                 <span class="card__hashtag-inner">
                   <input
                     type="hidden"
@@ -160,42 +160,12 @@ const createTask = (taskText, className, repeating = false) => {
                     class="card__hashtag-hidden-input"
                   />
                   <button type="button" class="card__hashtag-name">
-                    #repeat
+                    #${tag}
                   </button>
                   <button type="button" class="card__hashtag-delete">
                     delete
                   </button>
-                </span>
-  
-                <span class="card__hashtag-inner">
-                  <input
-                    type="hidden"
-                    name="hashtag"
-                    value="repeat"
-                    class="card__hashtag-hidden-input"
-                  />
-                  <button type="button" class="card__hashtag-name">
-                    #cinema
-                  </button>
-                  <button type="button" class="card__hashtag-delete">
-                    delete
-                  </button>
-                </span>
-  
-                <span class="card__hashtag-inner">
-                  <input
-                    type="hidden"
-                    name="hashtag"
-                    value="repeat"
-                    class="card__hashtag-hidden-input"
-                  />
-                  <button type="button" class="card__hashtag-name">
-                    #entertaiment
-                  </button>
-                  <button type="button" class="card__hashtag-delete">
-                    delete
-                  </button>
-                </span>
+                </span>`).join(``)}
               </div>
   
               <label>
@@ -209,14 +179,14 @@ const createTask = (taskText, className, repeating = false) => {
             </div>
           </div>
   
-          <label class="card__img-wrap card__img-wrap--empty">
+          <label class="card__img-wrap ${ data.picture ? `` : `card__img-wrap--empty`}">
             <input
               type="file"
               class="card__img-input visually-hidden"
               name="img"
             />
             <img
-              src="img/add-photo.svg"
+              src="${data.picture}"
               alt="task picture"
               class="card__img"
             />
@@ -301,10 +271,53 @@ const createTask = (taskText, className, repeating = false) => {
 
 export const renderTasks = (amount) => {
   let content = ``;
+  const tasksData = [];
 
-  for (let i = 0; i < amount; i++) {
-    content += createTask(`text`, CARDS_CLASSES[getRandomInt(0, CARDS_CLASSES.length)], Math.round(Math.random()));
+  const parseTaskData = (data) => {
+
+    const checkTaskExpiration = (dateInMilliseconds) => {
+      const currentTime = Date.now();
+      return currentTime > dateInMilliseconds ? `` : `card--deadline`;
+    };
+
+    const getRepeatingDays = (tasksRepeatsDays) => {
+      return Object.keys(tasksRepeatsDays).filter((day) => tasksRepeatsDays[day]);
+    };
+
+    const getDeadlineDate = (taskDueDate) => {
+      const dueDate = new Date(taskDueDate);
+      return (dueDate.getDate() + Units.startUnit) + ` ` + Units.months[dueDate.getMonth()];
+    };
+
+    const getDeadlineTime = (taskDueDate) => {
+      const dueDate = new Date(taskDueDate);
+      return (dueDate.getHours() + Units.startUnit) + `:` + dueDate.getMinutes();
+    };
+
+    return {
+      title: data.title,
+      tags: data.tags,
+      picture: data.picture,
+      color: data.color,
+      isFavorite: Boolean(data.isFavorite),
+      isDone: Boolean(data.isDone),
+      isRepeat: Boolean(data.isRepeat),
+      isExpired: checkTaskExpiration(data.dueDate),
+      deadlineDate: getDeadlineDate(data.dueDate),
+      deadlineTime: getDeadlineTime(data.dueDate),
+      repeatingDays: getRepeatingDays(data.repeatingDays),
+    };
+  };
+
+  let i = 0;
+  while (i < amount) {
+    tasksData.push(parseTaskData(getTaskData()));
+    i++;
   }
+
+  tasksData.forEach((data) => {
+    content += createTask(data);
+  });
 
   render(tasksContainer, content);
 };

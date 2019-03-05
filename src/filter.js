@@ -1,4 +1,4 @@
-import {getRandomInt, render} from "./constants";
+import {getRandomIntegerFromInterval, render} from "./constants";
 import {renderTasks} from './tasks';
 
 export const FILTERS_NAMES = [`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`];
@@ -23,11 +23,11 @@ const createFilter = (name, amount, checked = false, disabled = false) => {
 export const renderFilters = () => {
   let content = ``;
   FILTERS_NAMES.forEach((name) => {
-    content += createFilter(name, getRandomInt(0, TASKS_AMOUNT));
+    content += createFilter(name, getRandomIntegerFromInterval(0, TASKS_AMOUNT));
   });
 
   mainFilter.addEventListener(`click`, () => {
-    renderTasks(getRandomInt(0, TASKS_AMOUNT));
+    renderTasks(getRandomIntegerFromInterval(0, TASKS_AMOUNT));
   }, true);
 
   render(mainFilter, content);
