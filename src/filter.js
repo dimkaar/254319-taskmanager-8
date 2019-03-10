@@ -1,5 +1,5 @@
 import {getRandomIntegerFromInterval, render} from "./constants";
-import {renderTasks} from './tasks';
+import {renderTasks} from './constants';
 
 export const FILTERS_NAMES = [`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`];
 export const TASKS_AMOUNT = 20;

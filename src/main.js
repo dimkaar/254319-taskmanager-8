@@ -1,5 +1,5 @@
 import {renderFilters} from './filter';
-import {renderTasks} from './tasks';
+import {renderTasks} from './constants';
 
 const tasksNumber = 7;
 

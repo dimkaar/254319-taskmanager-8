@@ -1,10 +1,41 @@
-import {render, Units} from "./constants";
-import {getTaskData} from "./data";
+import {getHHMMTime, getDDMMDate, checkExpiration, createElement} from "./constants";
 
-const tasksContainer = document.querySelector(`.board__tasks`);
+export class TaskEdit {
+  constructor(data) {
+    this._color = data.color;
+    this._title = data.title;
+    this._tags = data.tags;
+    this._picture = data.picture;
+    this._repeatingDays = data.repeatingDays;
+    this._isExpired = checkExpiration(data.dueDate);
+    this._deadlineTime = getHHMMTime(data.dueDate);
+    this._deadlineDate = getDDMMDate(data.dueDate);
 
-const createTask = (data) => {
-  return `<article class="card card--${data.color} ${data.isRepeat ? `card--repeat` : ``}">
+    this._element = null;
+    this._onSubmit = null;
+  }
+
+  _onSubmitButtonClick(evt) {
+    evt.preventDefault();
+    if (typeof this._onSubmit === `function`) {
+      this._onSubmit();
+    }
+  }
+
+  _isRepeated() {
+    return Object.values(this._repeatingDays).some((it) => it === true);
+  }
+
+  set onSubmit(fn) {
+    this._onSubmit = fn;
+  }
+
+  get element() {
+    return this._element;
+  }
+
+  get template() {
+    return `<article class="card card--edit card--${this._color} ${this._isRepeated() ? `card--repeat` : ``}">
     <form class="card__form" method="get">
       <div class="card__inner">
         <div class="card__control">
@@ -35,7 +66,7 @@ const createTask = (data) => {
               placeholder="Start typing your text here..."
               name="text"
             >
-              ${data.title}
+              ${this._title}
             </textarea>
           </label>
         </div>
@@ -44,30 +75,11 @@ const createTask = (data) => {
           <div class="card__details">
             <div class="card__dates">
               <button class="card__date-deadline-toggle" type="button">
-                date: <span class="card__date-status">no</span>
+                date: <span class="card__date-status">&nbsp;${this._deadlineDate}</span>
               </button>
   
-              <fieldset class="card__date-deadline" ${ data.deadlineDate ? `` : `disabled`} >
-                <label class="card__input-deadline-wrap">
-                  <input
-                    class="card__date"
-                    type="text"
-                    placeholder="${data.deadlineDate}"
-                    name="date"
-                  />
-                </label>
-                <label class="card__input-deadline-wrap">
-                  <input
-                    class="card__time"
-                    type="text"
-                    placeholder="${ data.deadlineTime ? data.deadlineTime : ``}"
-                    name="time"
-                  />
-                </label>
-              </fieldset>
-  
               <button class="card__repeat-toggle" type="button">
-                repeat:<span class="card__repeat-status">no</span>
+                repeat:<span class="card__repeat-status"> ${this._isRepeated() ? `yes` : `no`}</span>
               </button>
   
               <fieldset class="card__repeat-days" disabled>
@@ -151,7 +163,7 @@ const createTask = (data) => {
   
             <div class="card__hashtag">
               <div class="card__hashtag-list">
-              ${[...data.tags].map((tag) => `
+              ${[...this._tags].map((tag) => `
                 <span class="card__hashtag-inner">
                   <input
                     type="hidden"
@@ -179,14 +191,14 @@ const createTask = (data) => {
             </div>
           </div>
   
-          <label class="card__img-wrap ${ data.picture ? `` : `card__img-wrap--empty`}">
+          <label class="card__img-wrap ${ this._picture ? `` : `card__img-wrap--empty`}">
             <input
               type="file"
               class="card__img-input visually-hidden"
               name="img"
             />
             <img
-              src="${data.picture}"
+              src="${this._picture}"
               alt="task picture"
               class="card__img"
             />
@@ -267,57 +279,25 @@ const createTask = (data) => {
       </div>
     </form>
   </article>`;
-};
-
-export const renderTasks = (amount) => {
-  let content = ``;
-  const tasksData = [];
-
-  const parseTaskData = (data) => {
-
-    const checkTaskExpiration = (dateInMilliseconds) => {
-      const currentTime = Date.now();
-      return currentTime > dateInMilliseconds ? `` : `card--deadline`;
-    };
-
-    const getRepeatingDays = (tasksRepeatsDays) => {
-      return Object.keys(tasksRepeatsDays).filter((day) => tasksRepeatsDays[day]);
-    };
-
-    const getDeadlineDate = (taskDueDate) => {
-      const dueDate = new Date(taskDueDate);
-      return (dueDate.getDate() + Units.startUnit) + ` ` + Units.months[dueDate.getMonth()];
-    };
-
-    const getDeadlineTime = (taskDueDate) => {
-      const dueDate = new Date(taskDueDate);
-      return (dueDate.getHours() + Units.startUnit) + `:` + dueDate.getMinutes();
-    };
-
-    return {
-      title: data.title,
-      tags: data.tags,
-      picture: data.picture,
-      color: data.color,
-      isFavorite: Boolean(data.isFavorite),
-      isDone: Boolean(data.isDone),
-      isRepeat: Boolean(data.isRepeat),
-      isExpired: checkTaskExpiration(data.dueDate),
-      deadlineDate: getDeadlineDate(data.dueDate),
-      deadlineTime: getDeadlineTime(data.dueDate),
-      repeatingDays: getRepeatingDays(data.repeatingDays),
-    };
-  };
-
-  let i = 0;
-  while (i < amount) {
-    tasksData.push(parseTaskData(getTaskData()));
-    i++;
   }
 
-  tasksData.forEach((data) => {
-    content += createTask(data);
-  });
+  render() {
+    this._element = createElement(this.template);
+    this.bind();
+    return this._element;
+  }
 
-  render(tasksContainer, content);
-};
+  unrender() {
+    this.unbind();
+    this._element = null;
+  }
+
+  bind() {
+    this._element.querySelector(`.card__form`)
+      .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+  }
+
+  unbind() {
+    // Удаление обработчиков
+  }
+}

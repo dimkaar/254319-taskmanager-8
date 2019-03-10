@@ -1,5 +1,12 @@
+import {getTaskData} from "./data";
+import {Task} from "./task";
+import {TaskEdit} from "./taskEdit";
+
 const FALSE_VALUE = 0;
 const TRUE_VALUE = 2;
+
+const fragment = document.createDocumentFragment();
+export const tasksContainer = document.querySelector(`.board__tasks`);
 
 export const Units = {
   millisecondsInSecond: 1000,
@@ -19,4 +26,59 @@ export const getRandomBoolean = () => {
 
 export const render = (root, content) => {
   root.innerHTML = content;
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+  return newElement.firstChild;
+};
+
+export const getHHMMTime = (date) => {
+  const dueDate = new Date(date);
+  return (dueDate.getHours() + Units.startUnit) + `:` + dueDate.getMinutes();
+};
+
+export const getDDMMDate = (taskDueDate) => {
+  const dueDate = new Date(taskDueDate);
+  return (dueDate.getDate() + Units.startUnit) + ` ` + Units.months[dueDate.getMonth()];
+};
+
+export const checkExpiration = (dateInMilliseconds) => {
+  const currentTime = Date.now();
+  return currentTime > dateInMilliseconds;
+};
+
+export const renderTasks = (amount) => {
+  const tasksData = [];
+
+  while (tasksContainer.hasChildNodes()) {
+    tasksContainer.removeChild(tasksContainer.firstChild);
+  }
+
+  let i = 0;
+  let currentData;
+  while (i < amount) {
+    currentData = getTaskData();
+    tasksData.push(currentData);
+    let task = new Task(currentData);
+    let editedTask = new TaskEdit(currentData);
+
+
+    task.onEdit = () => {
+      editedTask.render();
+      tasksContainer.replaceChild(editedTask.element, task.element);
+      task.unrender();
+    };
+
+    editedTask.onSubmit = () => {
+      task.render();
+      tasksContainer.replaceChild(task.element, editedTask.element);
+      editedTask.unrender();
+    };
+
+    fragment.appendChild(task.render());
+    i++;
+  }
+  tasksContainer.appendChild(fragment);
 };
