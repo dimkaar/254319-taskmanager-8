@@ -12,15 +12,17 @@ export class Task {
     this._deadlineDate = getDDMMDate(data.dueDate);
 
     this._element = null;
-    this._state = {
-      isEdit: false
-    };
 
     this._onEdit = null;
+
+    this.bind = () => {
+      this._element.querySelector(`.card__btn--edit`)
+        .addEventListener(`click`, this._onEditButtonClick.bind(this));
+    };
   }
 
   _isRepeated() {
-    return Object.values(this._repeatingDays).some((it) => it === true);
+    return Object.values(this._repeatingDays).some((it) => it);
   }
 
   get element() {
@@ -143,11 +145,6 @@ export class Task {
   </article>`.trim();
   }
 
-  bind() {
-    this._element.querySelector(`.card__btn--edit`)
-      .addEventListener(`click`, this._onEditButtonClick.bind(this));
-  }
-
 
   _onEditButtonClick() {
     if (typeof this._onEdit === `function`) {
@@ -162,7 +159,7 @@ export class Task {
   }
 
   unbind() {
-    this._element.removeEventListener(this._onEditButtonClick());
+    this._element.removeEventListener(`click`, this._onEditButtonClick);
   }
 
   unrender() {

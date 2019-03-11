@@ -13,6 +13,12 @@ export class TaskEdit {
 
     this._element = null;
     this._onSubmit = null;
+
+
+    this.bind = () => {
+      return this._element.querySelector(`.card__form`)
+        .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+    };
   }
 
   _onSubmitButtonClick(evt) {
@@ -23,7 +29,7 @@ export class TaskEdit {
   }
 
   _isRepeated() {
-    return Object.values(this._repeatingDays).some((it) => it === true);
+    return Object.values(this._repeatingDays).some((it) => it);
   }
 
   set onSubmit(fn) {
@@ -292,12 +298,7 @@ export class TaskEdit {
     this._element = null;
   }
 
-  bind() {
-    this._element.querySelector(`.card__form`)
-      .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
-  }
-
   unbind() {
-    // Удаление обработчиков
+    this._element.removeEventListener(`submit`, this._onSubmitButtonClick);
   }
 }
