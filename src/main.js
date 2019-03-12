@@ -1,7 +1,11 @@
 import {renderFilters} from './filter';
-import {renderTasks} from './constants';
-
-const tasksNumber = 7;
+import {renderTasks, tasksContainer} from './constants';
+import {tasksData} from './data';
 
 renderFilters();
-renderTasks(tasksNumber);
+
+while (tasksContainer.hasChildNodes()) {
+  tasksContainer.removeChild(tasksContainer.firstChild);
+}
+
+renderTasks(tasksData);

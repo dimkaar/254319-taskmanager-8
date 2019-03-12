@@ -4,6 +4,8 @@ const CARDS_COLORS = [`black`, `pink`, `yellow`, `blue`, `red`];
 
 const titleAmount = 3;
 const maxTagsAmount = 3;
+const tasksNumber = 7;
+export const tasksData = [];
 
 const getNearestWeekendRandomDate = () => {
   return Date.now() + Math.floor(getRandomIntegerFromInterval(-Units.daysInWeek, Units.daysInWeek + 1)) * Units.hoursInDay * Units.minutesInHour * Units.secondsInMinute * Units.millisecondsInSecond;
@@ -14,7 +16,7 @@ const getRandomSlicedTagsSet = (tagsSet, maxAmount) => {
   return new Set(croppedRandomlySortedTagsSet.sort(() => (Math.random() - 0.5)).slice(0, maxAmount));
 };
 
-export const getTaskData = () => ({
+const getTaskData = () => ({
   title: [
     `Изучить теорию`,
     `Сделать домашку`,
@@ -46,3 +48,7 @@ export const getTaskData = () => ({
   isDone: getRandomBoolean(),
   isRepeat: getRandomBoolean(),
 });
+
+for (let i = 0; i < tasksNumber; i++) {
+  tasksData.push(getTaskData());
+}

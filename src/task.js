@@ -1,5 +1,6 @@
 import {getHHMMTime, getDDMMDate, checkExpiration, createElement} from "./constants";
 
+
 export class Task {
   constructor(data) {
     this._color = data.color;
@@ -14,15 +15,19 @@ export class Task {
     this._element = null;
 
     this._onEdit = null;
-
-    this.bind = () => {
-      this._element.querySelector(`.card__btn--edit`)
-        .addEventListener(`click`, this._onEditButtonClick.bind(this));
-    };
   }
 
   _isRepeated() {
     return Object.values(this._repeatingDays).some((it) => it);
+  }
+
+  bind() {
+    this._element.querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, this);
+  }
+
+  handleEvent(evt) {
+    this._onEditButtonClick(evt);
   }
 
   get element() {
@@ -159,12 +164,11 @@ export class Task {
   }
 
   unbind() {
-    this._element.removeEventListener(`click`, this._onEditButtonClick);
+    this._element.removeEventListener(`click`, this);
   }
 
   unrender() {
     this.unbind();
     this._element = null;
   }
-
 }

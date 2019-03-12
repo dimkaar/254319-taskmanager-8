@@ -1,4 +1,4 @@
-import {getHHMMTime, getDDMMDate, checkExpiration, createElement} from "./constants";
+import {getDDMMDate, createElement} from "./constants";
 
 export class TaskEdit {
   constructor(data) {
@@ -7,18 +7,10 @@ export class TaskEdit {
     this._tags = data.tags;
     this._picture = data.picture;
     this._repeatingDays = data.repeatingDays;
-    this._isExpired = checkExpiration(data.dueDate);
-    this._deadlineTime = getHHMMTime(data.dueDate);
     this._deadlineDate = getDDMMDate(data.dueDate);
 
     this._element = null;
     this._onSubmit = null;
-
-
-    this.bind = () => {
-      return this._element.querySelector(`.card__form`)
-        .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
-    };
   }
 
   _onSubmitButtonClick(evt) {
@@ -26,6 +18,15 @@ export class TaskEdit {
     if (typeof this._onSubmit === `function`) {
       this._onSubmit();
     }
+  }
+
+  bind() {
+    return this._element.querySelector(`.card__form`)
+      .addEventListener(`submit`, this);
+  }
+
+  handleEvent(evt) {
+    this._onSubmitButtonClick(evt);
   }
 
   _isRepeated() {
@@ -299,6 +300,6 @@ export class TaskEdit {
   }
 
   unbind() {
-    this._element.removeEventListener(`submit`, this._onSubmitButtonClick);
+    this._element.removeEventListener(`submit`, this);
   }
 }

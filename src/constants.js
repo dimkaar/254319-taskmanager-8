@@ -1,4 +1,3 @@
-import {getTaskData} from "./data";
 import {Task} from "./task";
 import {TaskEdit} from "./taskEdit";
 
@@ -49,20 +48,12 @@ export const checkExpiration = (dateInMilliseconds) => {
   return currentTime > dateInMilliseconds;
 };
 
-export const renderTasks = (amount) => {
-  const tasksData = [];
-
-  while (tasksContainer.hasChildNodes()) {
-    tasksContainer.removeChild(tasksContainer.firstChild);
-  }
+export const renderTasks = (array) => {
 
   let i = 0;
-  let currentData;
-  while (i < amount) {
-    currentData = getTaskData();
-    tasksData.push(currentData);
-    let task = new Task(currentData);
-    let editedTask = new TaskEdit(currentData);
+  while (i < array.length) {
+    let task = new Task(array[i]);
+    let editedTask = new TaskEdit(array[i]);
 
 
     task.onEdit = () => {
@@ -80,5 +71,6 @@ export const renderTasks = (amount) => {
     fragment.appendChild(task.render());
     i++;
   }
+
   tasksContainer.appendChild(fragment);
 };
